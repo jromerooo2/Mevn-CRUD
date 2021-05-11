@@ -81,10 +81,10 @@
 export default {
     data(){
         return {
-                asegurado : new Asegurado() ,
-                 msg_modal = 'Revisa que todos los campos esten correctamente llenos',
-                 Title_Modal = 'Operacion fallida',                
-        }
+                asegurado : new Asegurado() ,               
+        },
+        msg_modal = 'Operacion Exitosa, recarga para ver los cambios',
+        Title_Modal = 'Operacion Exitosa'
     },
     methods: {
         addAsegurado() {

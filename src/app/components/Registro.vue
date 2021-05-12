@@ -2,31 +2,10 @@
     <div>
         <nav class="navbar navbar-dark bg-dark">
             <a href="#" class="navbar-brand mx-auto my-0">Registro de clientes</a>
-            <a window.location.href="http://siwei.me" class="nav-link text-white mx-auto my-0"> Registro</a>
+            <a href="../../public/addAsegurados.html" class="nav-link text-white mx-auto my-0"> Registro</a>
         </nav>
         <div class="container mt-5">
-            <div class="col-md-12">
-                <h2 class="text-center text-bold">Tabla de registro de clientes</h2>    
-                <table class="table table-bordered">                                    
-                    <thead class="text-center">                        
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellidos</th>
-                            <th>aseguradora</th>
-                            <th>Numero de Telefono</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="asegurado in asegurados" v-bind:key="asegurado">
-                            <td>{{asegurado.nombre}}</td>
-                            <td>{{asegurado.apellidos}}</td>
-                            <td>{{asegurado.aseguradora}}</td>
-                            <td>{{asegurado.numeroTele}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-           <!-- <div class="row">
+            <div class="row">
                 <div class="col-md-12">
 
                     <div class="card">
@@ -56,8 +35,7 @@
                                                     <button v-on:click="cleanTxt" class="btn btn-danger mt-4">Cancelar</button>
                                             </div>   
                             </form>
-                            -->
-                            <!-- 
+                            <!-- Modal -->
                             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -77,7 +55,7 @@
                         </div>
                     </div>
                 </div>
-            </div>  -->
+            </div>
         </div>
 
         <footer class="mt-5 text-center">            
@@ -87,76 +65,3 @@
         </footer>
     </div>    
 </template>
-
-
-<script>
- class Asegurado{
-     constructor(nombre, apellidos, aseguradora, numeroTele){
-         this.nombre = nombre;
-         this.apellidos = apellidos;
-         this.aseguradora = aseguradora;
-         this.numeroTele = numeroTele;
-     }
- }
-
-
-export default {
-    data(){
-        return {
-                asegurado : new Asegurado(),  
-                msg_modal : 'Operacion Exitosa, recarga para ver los cambios',
-                Title_Modal : 'Operacion Exitosa',   
-                asegurados: [],          
-        }
-    },
-    created(){
-        this.getAsegurados();
-    },
-    methods: {
-        addAsegurado() {
-            if (
-                !this.asegurado.nombre ||
-                !this.asegurado.apellidos ||
-                !this.asegurado.aseguradora || 
-                !this.asegurado.numeroTele) 
-                {
-                this.msg_modal = 'Revisa que todos los campos esten correctamente llenos';
-                 this.Title_Modal = 'Operacion fallida';
-            }
-            else{
-                fetch('/registro', {
-                     method: 'POST',
-                     body: JSON.stringify(this.asegurado),
-                     headers:{
-                         'Accept': 'application/json',
-                         'Content-type': 'application/json'
-                     }
-                 })
-                 .then(res => res.json())
-                 .then(data => {
-                     this.getAsegurados();
-                 })
-                this.cleanTxt();
-            }
-        },
-
-        cleanTxt(){
-            this.asegurado = new Asegurado();
-        },
-
-        getAsegurados(){
-             fetch('/registro', {
-                     method: 'GET',
-                 })
-                 .then(res => res.json())
-                 .then(data => {
-                     this.asegurados = data;
-                     console.log(this.asegurados);
-                 })
-        }
-
-    }
-}
-                
-</script>
-

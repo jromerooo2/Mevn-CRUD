@@ -1,8 +1,8 @@
 <template>
     <div>
         <nav class="navbar navbar-dark bg-dark">
-            <a href="#" class="navbar-brand mx-auto my-0">Registro de clientes</a>
-            <a href="../../public/addAsegurados.html" class="nav-link text-white mx-auto my-0"> Registro</a>
+            <a href="#"  class="navbar-brand mx-auto my-0">Karla Seguros - Añadir clientes</a>
+            <a href="" @click="redireccion" class="nav-link text-white mx-auto my-0"> Registro de clientes</a>
         </nav>
         <div class="container mt-5">
             <div class="row">
@@ -15,20 +15,31 @@
                         <div class="card-body">
                             <form @submit.prevent="addAsegurado">
                                 <div class="form-group">
+                                    <label class="mt-2 text-bold">Nombres</label>
                                         <input class="form-control" 
                                         type="text" v-model="asegurado.nombre" 
                                         placeholder="Nombres">
+                                    <label class="mt-3">Apellidos</label> 
                                         <input class="form-control mt-2" 
                                         type="text"  v-model="asegurado.apellidos" 
                                         placeholder="Apellidos">
+                                        <label class="mt-3">Aseguradora</label> 
                                         <select class=" form-select mt-2" v-model="asegurado.aseguradora">
                                             <option value="Mapfre">Mapfre</option>
                                             <option value="Asesuisa">Asesuisa</option>
                                             <option value="Acsa">Acsa</option>
                                         </select>
+                                        <label class="mt-3">Numero de Telefono</label> 
                                        <input class="form-control mt-2" 
                                         type="text"  v-model="asegurado.numeroTele"
                                          placeholder="Numero Telefonico">
+                                       <label class="mt-3">Numero de Poliza</label> 
+                                        <input type="string" class="form-control mt-2"
+                                        v-model="asegurado.numeroPoliza"
+                                        placeholder="No. Poliza">
+                                        <label class="mt-3">Fecha de nacimiento</label> 
+                                        <input type="date" class="form-control mt-2"
+                                        v-model="asegurado.fechadeNacimiento">
                                 </div>
                                             <div class="container">
                                                     <button class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Agregar</button>
@@ -58,10 +69,87 @@
             </div>
         </div>
 
-        <footer class="mt-5 text-center">            
+        <footer class="mt-5 mb-5 text-center">            
                 <figcaption class="text-gray mx-auto">
                     Desarrollado con MEVN Stack por @jromerooo2 
                 </figcaption>
         </footer>
-    </div>    
+    </div>   
 </template>
+    <script>
+ class Asegurado{
+     constructor(nombre, apellidos, aseguradora, numeroTele, numeroPoliza, fechadeNacimiento){
+         this.nombre = nombre;
+         this.apellidos = apellidos;
+         this.aseguradora = aseguradora;
+         this.numeroTele = numeroTele;
+         this.numeroPoliza = numeroPoliza;
+         this.fechadeNacimiento = fechadeNacimiento;
+         
+     }
+ }
+
+
+export default {
+    data(){
+        return {
+                asegurado : new Asegurado(),  
+                msg_modal : 'Operacion Exitosa, recarga para ver los cambios',
+                Title_Modal : 'Operacion Exitosa',   
+                asegurados: [],          
+        }
+    },
+    created(){
+        this.getAsegurados();
+    },
+    methods: {
+        addAsegurado() {
+            if (
+                !this.asegurado.nombre ||
+                !this.asegurado.apellidos ||
+                !this.asegurado.aseguradora || 
+                !this.asegurado.numeroTele) 
+                {
+                this.msg_modal = 'Revisa que todos los campos esten correctamente llenos';
+                 this.Title_Modal = 'Operacion fallida';
+            }
+            else{
+                fetch('/registro', {
+                     method: 'POST',
+                     body: JSON.stringify(this.asegurado),
+                     headers:{
+                         'Accept': 'application/json',
+                         'Content-type': 'application/json'
+                     }
+                 })
+                 .then(res => res.json())
+                 .then(data => {
+                     this.getAsegurados();
+                 })
+                this.cleanTxt();
+            }
+        },
+
+        cleanTxt(){
+            this.asegurado = new Asegurado();
+        },
+
+        getAsegurados(){
+             fetch('/registro', {
+                     method: 'GET',
+                 })
+                 .then(res => res.json())
+                 .then(data => {
+                     this.asegurados = data;
+                     console.log(this.asegurados);
+                 })
+        },
+        
+        redireccion(){
+            window.open('http://localhost:27017/index.html');
+        }
+
+    }
+}
+                
+</script> 

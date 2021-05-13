@@ -5,7 +5,9 @@ const Asegurado = new Schema({
         nombre: String,
         apellidos: String,
         aseguradora: String,
-        numeroTele: String
+        numeroTele: String,
+        numeroPoliza: String,
+        fechadeNacimiento: String
 });
 
 module.exports = mongoose.model('Asegurado', Asegurado);

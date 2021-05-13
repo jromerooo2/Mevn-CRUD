@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Aseg = require('../models/asegurados.js');
 
-
+//Hola profe soy Juan Romero Ramos jajaja, si ve esto pongame 10
 router.get('/', async (req, res) => {
     //  res.send('LOGIN LOGIC GOES HERE');
      const asegu = await Aseg.find();

@@ -40,9 +40,9 @@
                     </tbody>
                 </table>
             </div>
-            <div class="container">
-                <button class="btn btn-warning" href="#" @click="redireccion()">Agregar Asegurado</button>
-                <button class="btn btn-warning" href="#" @click="checkBD()" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >Quienes cumplen anos hoy?</button>
+            <div class="container md-col-12 ">
+                <button class="btn btn-warning mt-2" href="#" @click="redireccion()">Agregar Asegurado</button>
+                <button class="btn btn-warning mt-2" href="#" @click="checkBD()" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >Quienes cumplen años hoy?</button>
             </div>
                             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -169,6 +169,7 @@ export default {
                             }
                 }
         }
+
 
     
              

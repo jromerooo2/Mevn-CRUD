@@ -8,8 +8,7 @@
             <div class="d-md-flex d-sm-block justify-content-md-between justify-content-sm-center">
                 <h2 class="text-center text-bold mb-5">Tabla de registro de clientes</h2>   
                 <div class="text-center">
-                    <button @click="searchAsegurado()" class="btn btn-primary ">Buscar Cliente</button>
-                    <input type="search" class="mb-5" ref="inputName" placeholder="Buscar cliente..." aria-controls="example">
+                    <input type="search" v-model="searchQuery" class="mb-5" ref="inputName" placeholder="Buscar cliente..." aria-controls="example">
                 </div>
             </div>
            
@@ -28,7 +27,7 @@
                         </tr>
                     </thead>
                     <tbody class="text-center">
-                        <tr v-for="asegurado in asegurados" v-bind:key="asegurado">
+                        <tr v-for="asegurado in filteredAsegurados" v-bind:key="asegurado">
                             <td>{{asegurado.nombre}}</td>
                             <td>{{asegurado.apellidos}}</td>
                             <td>{{asegurado.aseguradora}}</td>
@@ -36,56 +35,26 @@
                             <td>{{asegurado.numeroPoliza}}</td>
                             <td>{{asegurado.fechadeNacimiento}}</td>
                             <td><button @click="Eliminar(asegurado._id)" class="btn btn-danger align-items-center">Eliminar</button></td>
-                            <td><button @click="editar(asegurado._id)" class="btn btn-primary align-items-center">Editar</button></td> 
+                            <td><button @click="checkBD()" class="btn btn-primary align-items-center">Editar</button></td> 
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="container">
                 <button class="btn btn-warning" href="#" @click="redireccion()">Agregar Asegurado</button>
+                <button class="btn btn-warning" href="#" @click="checkBD()" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >Quienes cumplen anos hoy?</button>
             </div>
-
-           <!-- <div class="row">
-                <div class="col-md-12">
-
-                    <div class="card">
-                     <div class="card-title">
-                        <h3 class="text-center p-4">Agregar nuevo Registro</h3>
-                    </div>
-                        <div class="card-body">
-                            <form @submit.prevent="addAsegurado">
-                                <div class="form-group">
-                                        <input class="form-control" 
-                                        type="text" v-model="asegurado.nombre" 
-                                        placeholder="Nombres">
-                                        <input class="form-control mt-2" 
-                                        type="text"  v-model="asegurado.apellidos" 
-                                        placeholder="Apellidos">
-                                        <select class=" form-select mt-2" v-model="asegurado.aseguradora">
-                                            <option value="Mapfre">Mapfre</option>
-                                            <option value="Asesuisa">Asesuisa</option>
-                                            <option value="Acsa">Acsa</option>
-                                        </select>
-                                       <input class="form-control mt-2" 
-                                        type="text"  v-model="asegurado.numeroTele"
-                                         placeholder="Numero Telefonico">
-                                </div>
-                                            <div class="container">
-                                                    <button class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Agregar</button>
-                                                    <button v-on:click="cleanTxt" class="btn btn-danger mt-4">Cancelar</button>
-                                            </div>   
-                            </form>
-                            -->
-                            <!-- 
                             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                                <h5 class="modal-title" id="staticBackdropLabel">{{Title_Modal}}</h5>
+                                                <h5 class="modal-title" id="staticBackdropLabel">Cumpleañeros de hoy: </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body" id="text">
-                                                {{msg_modal}}
+                                                <ul v-for="jeje of aseguradosCum" v-bind:key="jeje">
+                                                    <li class="text-primary">{{jeje}}</li>
+                                                </ul>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
@@ -93,10 +62,6 @@
                                         </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>  -->
         </div>
 
         <footer class="mt-5 text-center">            
@@ -109,6 +74,7 @@
 
 
 <script>
+
  class Asegurado{
      constructor(nombre, apellidos, aseguradora, numeroTele, numeroPoliza, fechadeNacimiento){
          this.nombre = nombre;
@@ -125,13 +91,23 @@ export default {
     data(){
         return {
                 asegurado : new Asegurado(),  
-                msg_modal : 'Operacion Exitosa, recarga para ver los cambios',
-                Title_Modal : 'Operacion Exitosa',   
-                asegurados: [],          
+                msg : 'No hay registros aun, agrega asegurados para ver quien cumple años hoy',
+                nadie: 'Nadie cumple años hoy',
+                asegurados: [],
+                aseguradosCum: [],
+                searchQuery: '',          
         }
     },
     created(){
         this.getAsegurados();
+    },
+    computed:{
+        filteredAsegurados: function(){
+
+            return this.asegurados.filter((Asegurado)=>{
+                 return Asegurado.nombre.toLowerCase().match(this.searchQuery.toLowerCase());
+            });
+        }
     },
     methods: {
 
@@ -142,15 +118,69 @@ export default {
                  .then(res => res.json())
                  .then(data => {
                      this.asegurados = data;
-                     console.log(this.asegurados);
                  })
         },
         
         redireccion(){
             window.open('http://localhost:27017/addAsegurado.html');
         },
-        editar(aseguradora, nombre, numeroTele){
-            //alert('Hola' + " " +nombre +" " + aseguradora + " " + numeroTele);
+        checkBD(){
+            if (this.asegurados.length === 0 ) {                
+
+                 if (!this.aseguradosCum.includes(this.msg)) {
+                        // alert(this.asegurados[i].nombre +" cumple anos hoy")
+                         this.aseguradosCum.push(this.msg)
+                    }                
+
+        }    
+        else{
+
+                let date = new Date()
+                let day = date.getDate()
+                let month = date.getMonth() + 1;
+                let year = date.getFullYear()
+
+                if(month < 10){
+                const fecha = `${year}-0${month}-${day}`;
+                // console.log(fecha);
+
+                        for (let i = 0; i < this.asegurados.length; i++) {
+                                    if (fecha === this.asegurados[i].fechadeNacimiento ) {
+                                        if (!this.aseguradosCum.includes(this.asegurados[i].nombre) ) {
+                                        // alert(this.asegurados[i].nombre +" cumple anos hoy")
+                                        this.aseguradosCum.push(this.asegurados[i].nombre)
+                                        }
+
+
+                                    }
+                            }
+
+                }else{
+                const fecha = `${year}-${month}-${day}`;
+
+                        for (let i = 0; i < this.asegurados.length; i++) {
+                                    if (fecha === this.asegurados[i].fechadeNacimiento ) {
+                                        if (!this.aseguradosCum.includes(this.asegurados[i].nombre) ) {
+                                        // alert(this.asegurados[i].nombre +" cumple anos hoy")
+                                        this.aseguradosCum.push(this.asegurados[i].nombre)
+                                        }
+
+                                    }
+                            }
+                }
+        }
+
+    
+             
+            
+            
+        //     const currentDateWithFormat = currentDate.toJSON().slice(0,10);
+        //     // const datee = this.convertTZ(currentDateWithFormat ,"America/El_Salvador");
+        //    const usaTime = currentDateWithFormat.toLocaleString("en-US", {timeZone: "America/El_Salvador"});
+
+
+
+        
         },
         Eliminar(id){
                     fetch('/registro/' + id, {
@@ -163,27 +193,10 @@ export default {
                  .then(res => res.json())
                  .then(data => {
                      this.getAsegurados();
+                     location.reload();
                  })
             },
 
-            searchAsegurado(){
-                let nombreA = this.$refs.inputName.value;
-                console.log(nombreA)
-                // const id = this.$refs.inputName.value._id;
-                fetch('/registro', {
-                     method: 'POST',
-                     body: JSON.stringify(this.asegurado),
-                     headers:{
-                         'Accept': 'application/json',
-                         'Content-type': 'application/json'
-                     }
-                 })
-                 .then(res => res.json())
-                 .then(data => {
-                     this.getAsegurados();
-                 })
-                this.cleanTxt();
-        }
 
 
     

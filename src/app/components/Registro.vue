@@ -141,7 +141,7 @@ export default {
                  .then(res => res.json())
                  .then(data => {
                      this.asegurados = data;
-                     console.log(this.asegurados);
+                    //  console.log(this.asegurados);
                  })
         },
         

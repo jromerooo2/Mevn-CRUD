@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <nav class="navbar navbar-dark bg-dark">
+    <div>    
+        <nav class="navbar navbar-dark bg-danger">
             <a href="#" class="navbar-brand mx-auto my-0">Karla Seguros - Registro de asegurados </a>
             <a href="#" @click="redireccion" class="nav-link text-white mx-auto my-0"> Añadir Asegurado</a>
-        </nav>
+        </nav> 
         <div class="container mt-5">
             <div class="d-md-flex d-sm-block justify-content-md-between justify-content-sm-center">
                 <h2 class="text-center text-bold mb-5">Tabla de registro de clientes</h2>   
@@ -26,7 +26,7 @@
                             <th>Eliminar</th> 
                         </tr>
                     </thead>
-                    <tbody class="text-center">
+                    <tbody class="text-center" >
                         <tr v-for="asegurado in filteredAsegurados" v-bind:key="asegurado">
                             <td>{{asegurado.nombre}}</td>
                             <td>{{asegurado.apellidos}}</td>
@@ -42,7 +42,7 @@
             </div>
             <div class="container md-col-12 ">
                 <button class="btn btn-warning mt-2" href="#" @click="redireccion()">Agregar Asegurado</button>
-                <button class="btn btn-warning mt-2" href="#" @click="checkBD()" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >Quienes cumplen años hoy?</button>
+                <button class="btn btn-warning mt-2" href="#" @click="checkBD()" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >¿Quienes cumplen años hoy?</button>
             </div>
                             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -69,9 +69,8 @@
                     Desarrollado con MEVN Stack por @jromerooo2 
                 </figcaption>
         </footer>
-    </div>    
+    </div>   
 </template>
-
 
 <script>
 

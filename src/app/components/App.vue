@@ -7,7 +7,10 @@
         <div class="container mt-5">
             <div class="d-md-flex d-sm-block justify-content-md-between justify-content-sm-center">
                 <h2 class="text-center text-bold mb-5">Tabla de registro de clientes</h2>   
-                <input type="search" class="mb-5" placeholder="" aria-controls="example">
+                <div class="text-center">
+                    <button @click="searchAsegurado()" class="btn btn-primary ">Buscar Cliente</button>
+                    <input type="search" class="mb-5" ref="inputName" placeholder="Buscar cliente..." aria-controls="example">
+                </div>
             </div>
            
             <div class="table-responsive">               
@@ -37,6 +40,9 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="container">
+                <button class="btn btn-warning" href="#" @click="redireccion()">Agregar Asegurado</button>
             </div>
 
            <!-- <div class="row">
@@ -158,11 +164,30 @@ export default {
                  .then(data => {
                      this.getAsegurados();
                  })
-            }
+            },
+
+            searchAsegurado(){
+                let nombreA = this.$refs.inputName.value;
+                console.log(nombreA)
+                // const id = this.$refs.inputName.value._id;
+                fetch('/registro', {
+                     method: 'POST',
+                     body: JSON.stringify(this.asegurado),
+                     headers:{
+                         'Accept': 'application/json',
+                         'Content-type': 'application/json'
+                     }
+                 })
+                 .then(res => res.json())
+                 .then(data => {
+                     this.getAsegurados();
+                 })
+                this.cleanTxt();
         }
 
 
     
+    }
 }
                 
 </script>

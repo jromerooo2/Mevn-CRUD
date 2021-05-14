@@ -11,6 +11,14 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+    //  res.send('LOGIN LOGIC GOES HERE');
+     const nombre = req.params.nombre;
+     const asegu = await Aseg.find({name: nombre})
+    console.log(asegu);
+    res.json(asegu);
+});
+
+router.post('/', async (req, res) => {
     const asegu = new Aseg(req.body);
     // console.log(asegu);
     await asegu.save();
@@ -33,6 +41,7 @@ router.delete('/:id', async (req, res) => {
     res.json(
         {
             "status":"eliminado"
+
     });
 });
 

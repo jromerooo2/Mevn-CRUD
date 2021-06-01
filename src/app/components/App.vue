@@ -35,7 +35,7 @@
                             <td>{{asegurado.numeroPoliza}}</td>
                             <td>{{asegurado.fechadeNacimiento}}</td>
                             <td><button @click="Eliminar(asegurado._id)" class="btn btn-danger align-items-center">Eliminar</button></td>
-                            <td><button @click="checkBD()" class="btn btn-primary align-items-center">Editar</button></td> 
+                            <td><button @click="editar(asegurado)" class="btn btn-primary align-items-center">Editar</button></td> 
                         </tr>
                     </tbody>
                 </table>
@@ -44,6 +44,10 @@
                 <button class="btn btn-warning mt-2" href="#" @click="redireccion()">Agregar Asegurado</button>
                 <button class="btn btn-warning mt-2" href="#" @click="checkBD()" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >¿Quienes cumplen años hoy?</button>
             </div>
+
+
+
+                        <!--Modal-->
                             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -90,8 +94,7 @@ export default {
     data(){
         return {
                 asegurado : new Asegurado(),  
-                msg : 'No hay registros aun, agrega asegurados para ver quien cumple años hoy',
-                nadie: 'Nadie cumple años hoy',
+                msg : 'Nadie cumple años hoy',
                 asegurados: [],
                 aseguradosCum: [],
                 searchQuery: '',          
@@ -109,9 +112,12 @@ export default {
         }
     },
     methods: {
-
+        editar(persona){
+            window.open('http://localhost:27017/addAsegurado.html?name=' + persona.nombre +'?apellidos='+ persona.apellidos);
+            // alert(persona.nombre);
+        },
         getAsegurados(){
-             fetch('/registro', {
+             fetch('/get-asegurados', {
                      method: 'GET',
                  })
                  .then(res => res.json())
@@ -124,16 +130,16 @@ export default {
             window.open('http://localhost:27017/addAsegurado.html');
         },
         checkBD(){
-            if (this.asegurados.length === 0 ) {                
+            if (this.asegurados.length === 0 || this.aseguradosCum.length === 0 ) {                
 
                  if (!this.aseguradosCum.includes(this.msg)) {
                         // alert(this.asegurados[i].nombre +" cumple anos hoy")
                          this.aseguradosCum.push(this.msg)
                     }                
 
-        }    
-        else{
-
+        } else{
+                this.aseguradosCum.pop();
+                
                 let date = new Date()
                 let day = date.getDate()
                 let month = date.getMonth() + 1;
@@ -154,7 +160,7 @@ export default {
                                     }
                             }
 
-                }else{
+                }else {
                 const fecha = `${year}-${month}-${day}`;
 
                         for (let i = 0; i < this.asegurados.length; i++) {
@@ -183,7 +189,7 @@ export default {
         
         },
         Eliminar(id){
-                    fetch('/registro/' + id, {
+                    fetch('/delete/' + id, {
                      method: 'DELETE',
                      headers:{
                          'Accept': 'application/json',
@@ -204,5 +210,4 @@ export default {
 }
                 
 </script>
-
 

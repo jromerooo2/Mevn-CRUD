@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.static(__dirname + "/public"));
 
 //ROUTES
-app.use('/registro',require('./routes/asegurados.js'));
+app.use('/',require('./routes/asegurados.js'));
 
 
 //Starting server

@@ -1,8 +1,8 @@
 <template>
-    <div>
+        <div>
         <nav class="navbar navbar-dark bg-dark">
             <a href="#"  class="navbar-brand mx-auto my-0">Karla Seguros - Añadir clientes</a>
-            <a href="" @click="redireccion" class="nav-link text-white mx-auto my-0"> Registro de clientes</a>
+            <a href="" class="nav-link text-white mx-auto my-0"> Registro de clientes</a>
         </nav>
         <div class="container mt-5">
             <div class="row">
@@ -13,37 +13,37 @@
                         <h3 class="text-center p-4">Agregar nuevo Registro</h3>
                     </div>
                         <div class="card-body">
-                            <form  @submit.prevent="addAsegurado">
+                            <form  @submit.prevent="">
                                 <div class="form-group">
                                     <label class="mt-2 text-bold">Nombres</label>
-                                        <input class="form-control" 
-                                        type="text" v-model="asegurado.nombre" 
+                                        <input v-model="asegurado.nombre" class="form-control" 
+                                        type="text"  
                                         placeholder="Nombres">
                                     <label class="mt-3">Apellidos</label> 
-                                        <input class="form-control mt-2" 
-                                        type="text"  v-model="asegurado.apellidos" 
+                                        <input  v-model="asegurado.apellidos" class="form-control mt-2" 
+                                        type="text"   
                                         placeholder="Apellidos">
                                         <label class="mt-3">Aseguradora</label> 
-                                        <select class=" form-select mt-2" v-model="asegurado.aseguradora">
+                                        <select  v-model="asegurado.aseguradora" class=" form-select mt-2" >
                                             <option value="Mapfre">Mapfre</option>
                                             <option value="Asesuisa">Asesuisa</option>
                                             <option value="Acsa">Acsa</option>
                                         </select>
                                         <label class="mt-3">Numero de Telefono</label> 
-                                       <input class="form-control mt-2" 
-                                        type="text"  v-model="asegurado.numeroTele"
+                                       <input v-model="asegurado.numeroTele" class="form-control mt-2" 
+                                        type="text" 
                                          placeholder="Numero Telefonico">
                                        <label class="mt-3">Numero de Poliza</label> 
-                                        <input type="string" class="form-control mt-2"
-                                        v-model="asegurado.numeroPoliza"
+                                        <input v-model="asegurado.numeroPoliza" type="string" class="form-control mt-2"
+                                        
                                         placeholder="No. Poliza">
                                         <label class="mt-3">Fecha de nacimiento</label> 
-                                        <input type="date" class="form-control mt-2"
-                                        v-model="asegurado.fechadeNacimiento">
+                                        <input v-model="asegurado.fechadeNacimiento" type="date" class="form-control mt-2"
+                                        >
                                 </div>
                                             <div class="container">
-                                                    <button class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Agregar</button>
-                                                    <button v-on:click="cleanTxt" class="btn btn-danger mt-4">Cancelar</button>
+                                                    <button @click="updateAsegurado()" class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Actualizar</button>
+                                                    <button class="btn btn-danger mt-4">Cancelar</button>
                                             </div>   
                             </form>
                             <!-- Modal -->
@@ -51,11 +51,11 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                                <h5 class="modal-title" id="staticBackdropLabel">{{Title_Modal}}</h5>
+                                                <h5 class="modal-title" id="staticBackdropLabel">Operación exitosa</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body" id="text">
-                                                {{msg_modal}}
+                                            El Asegurado ha sido actualizado.
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
@@ -77,79 +77,43 @@
         </footer>
     </div>   
 </template>
-    <script>
- class Asegurado{
-     constructor(nombre, apellidos, aseguradora, numeroTele, numeroPoliza, fechadeNacimiento){
-         this.nombre = nombre;
-         this.apellidos = apellidos;
-         this.aseguradora = aseguradora;
-         this.numeroTele = numeroTele;
-         this.numeroPoliza = numeroPoliza;
-         this.fechadeNacimiento = fechadeNacimiento;
-         
-     }
- }
 
-
+<script>
 export default {
     data(){
-        return {
-                asegurado : new Asegurado(),  
-                msg_modal : 'Operacion Exitosa, recarga para ver los cambios',
-                Title_Modal : 'Operacion Exitosa',   
-                asegurados: [], 
-                datosEditA: [],      
+        return{
+            asegurado : [],
+            id: "",
         }
     },
-    methods: {
+    created(){
+        this.findAsegurado()
+    },
+    methods:{
+        findAsegurado(id){
+            var url_string = window.location.href
+            var url = new URL(url_string);
+            var idreq = url.searchParams.get("id");
+            this.id = idreq
 
-        addAsegurado() {
-            if (
-                !this.asegurado.nombre ||
-                !this.asegurado.apellidos ||
-                !this.asegurado.aseguradora || 
-                !this.asegurado.numeroTele) 
-                {
-                this.msg_modal = 'Revisa que todos los campos esten correctamente llenos';
-                 this.Title_Modal = 'Operacion fallida';
-            }
-            else{
-                fetch('/asegurados', {
-                     method: 'POST',
+            fetch('/asegurados/'+this.id)
+                 .then(res => res.json())
+                 .then(data => {
+                     this.asegurado = data;
+                     console.log(this.asegurado)
+                 })
+        },
+        updateAsegurado(){
+            fetch("/update/"+this.id, {
+                     method: 'PUT',
                      body: JSON.stringify(this.asegurado),
                      headers:{
                          'Accept': 'application/json',
                          'Content-type': 'application/json'
                      }
                  })
-                 .then(res => res.json())
-                 .then(data => {
-                     this.getAsegurados();
-                 })
-                this.cleanTxt();
-            }
         },
-
-        cleanTxt(){
-            this.asegurado = new Asegurado();
-        },
-
-        getAsegurados(){
-             fetch('/asegurados', {
-                     method: 'GET',
-                 })
-                 .then(res => res.json())
-                 .then(data => {
-                     this.asegurados = data;
-                    //  console.log(this.asegurados);
-                 })
-        },
-        
-        redireccion(){
-            window.redirect('http://localhost:27017/Registro.html');
-        }
-
     }
+    
 }
-                
-</script> 
+</script>

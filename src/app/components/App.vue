@@ -1,20 +1,24 @@
 <template>
     <div>    
-        <nav class="navbar navbar-dark bg-danger">
-            <a href="#" class="navbar-brand mx-auto my-0">Karla Seguros - Registro de asegurados </a>
-            <a href="#" @click="redireccion" class="nav-link text-white mx-auto my-0"> Añadir Asegurado</a>
-        </nav> 
+        <div class="container h-25 navbar navbar-dark bg-danger">
+            <h1 href="#" class="navbar-brand mx-auto my-0"> Registro de asegurados </h1>
+        </div> 
         <div class="container mt-5">
             <div class="d-md-flex d-sm-block justify-content-md-between justify-content-sm-center">
                 <h2 class="text-center text-bold mb-5">Tabla de registro de clientes</h2>   
                 <div class="text-center">
                     <input type="search" v-model="searchQuery" class="mb-5" ref="inputName" placeholder="Buscar cliente..." aria-controls="example">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
                 </div>
             </div>
-           
-            <div class="table-responsive">               
-               <table class="table table-bordered">                                    
-                    <thead class="text-center thead-dark">                        
+            <h1 class=" text-black display-5" v-if="asegurados == ''">¡Oops!, parece que no hay ningún registro aún...</h1>
+            <div v-else class="table-responsive">               
+               <table class="table">                                    
+                    <thead class="text-center table-danger">                        
                         <tr>
                             <th>Nombre</th>
                             <th>Apellidos</th>
@@ -22,27 +26,28 @@
                             <th>No. Telefono</th>
                             <th>No. Poliza</th>
                             <th>Fecha de Nacimiento</th>
-                            <th>Editar</th>
-                            <th>Eliminar</th> 
+                            <th>Eliminar</th>
+                            <th>Editar</th> 
                         </tr>
                     </thead>
                     <tbody class="text-center" >
-                        <tr v-for="asegurado in filteredAsegurados" v-bind:key="asegurado">
+
+                        <tr  v-for="asegurado in filteredAsegurados" v-bind:key="asegurado">
                             <td>{{asegurado.nombre}}</td>
                             <td>{{asegurado.apellidos}}</td>
                             <td>{{asegurado.aseguradora}}</td>
                             <td>{{asegurado.numeroTele}}</td>
                             <td>{{asegurado.numeroPoliza}}</td>
                             <td>{{asegurado.fechadeNacimiento}}</td>
-                            <td><button @click="Eliminar(asegurado._id)" class="btn btn-danger align-items-center">Eliminar</button></td>
-                            <td><button @click="editar(asegurado)" class="btn btn-primary align-items-center">Editar</button></td> 
+                            <td><button @click="Eliminar(asegurado)"  class="btn btn-danger align-items-center">Eliminar</button></td>
+                            <td><button  @click="editar(asegurado)" class="btn btn-primary align-items-center">Editar</button></td> 
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="container md-col-12 ">
                 <button class="btn btn-warning mt-2" href="#" @click="redireccion()">Agregar Asegurado</button>
-                <button class="btn btn-warning mt-2" href="#" @click="checkBD()" data-bs-toggle="modal" data-bs-target="#staticBackdrop" >¿Quienes cumplen años hoy?</button>
+                <button class="btn btn-warning mt-2" href="#" @click="checkBD()"  >¿Quienes cumplen años hoy?</button>
             </div>
 
 
@@ -52,13 +57,11 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                                <h5 class="modal-title" id="staticBackdropLabel">Cumpleañeros de hoy: </h5>
+                                                <h5 class="modal-title" id="staticBackdropLabel">Confirmación </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body" id="text">
-                                                <ul v-for="jeje of aseguradosCum" v-bind:key="jeje">
-                                                    <li class="text-primary">{{jeje}}</li>
-                                                </ul>
+                                                Estas segura de eliminar a?
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
@@ -66,11 +69,13 @@
                                         </div>
                                 </div>
                             </div>
+
+
         </div>
 
         <footer class="mt-5 text-center">            
                 <figcaption class="text-gray mx-auto">
-                    Desarrollado con MEVN Stack por @jromerooo2 
+                    Desarrollado con 🧡 y MEVN por @jromerooo2 
                 </figcaption>
         </footer>
     </div>   
@@ -97,7 +102,7 @@ export default {
                 msg : 'Nadie cumple años hoy',
                 asegurados: [],
                 aseguradosCum: [],
-                searchQuery: '',          
+                searchQuery: '',                          
         }
     },
     created(){
@@ -105,7 +110,6 @@ export default {
     },
     computed:{
         filteredAsegurados: function(){
-
             return this.asegurados.filter((Asegurado)=>{
                  return Asegurado.nombre.toLowerCase().match(this.searchQuery.toLowerCase());
             });
@@ -113,11 +117,10 @@ export default {
     },
     methods: {
         editar(persona){
-            window.open('http://localhost:27017/addAsegurado.html?name=' + persona.nombre +'?apellidos='+ persona.apellidos);
-            // alert(persona.nombre);
+            window.open('/editar.html?id='+persona._id);
         },
         getAsegurados(){
-             fetch('/get-asegurados', {
+             fetch('/asegurados', {
                      method: 'GET',
                  })
                  .then(res => res.json())
@@ -127,69 +130,63 @@ export default {
         },
         
         redireccion(){
-            window.open('http://localhost:27017/addAsegurado.html');
+            window.open('/addAsegurado.html');
         },
-        checkBD(){
-            if (this.asegurados.length === 0 || this.aseguradosCum.length === 0 ) {                
+        // checkBD(){
+        //     if (this.asegurados.length === 0 || this.aseguradosCum.length === 0 ) {                
 
-                 if (!this.aseguradosCum.includes(this.msg)) {
-                        // alert(this.asegurados[i].nombre +" cumple anos hoy")
-                         this.aseguradosCum.push(this.msg)
-                    }                
+        //          if (!this.aseguradosCum.includes(this.msg)) {
+        //                 // alert(this.asegurados[i].nombre +" cumple anos hoy")
+        //                  this.aseguradosCum.push(this.msg)
+        //             }                
 
-        } else{
-                this.aseguradosCum.pop();
+        // } else{
+        //         this.aseguradosCum.pop();
                 
-                let date = new Date()
-                let day = date.getDate()
-                let month = date.getMonth() + 1;
-                let year = date.getFullYear()
+        //         let date = new Date()
+        //         let day = date.getDate()
+        //         let month = date.getMonth() + 1;
+        //         let year = date.getFullYear()
 
-                if(month < 10){
-                const fecha = `${year}-0${month}-${day}`;
-                // console.log(fecha);
+        //         if(month < 10){
+        //         const fecha = `${year}-0${month}-${day}`;
+        //         // console.log(fecha);
 
-                        for (let i = 0; i < this.asegurados.length; i++) {
-                                    if (fecha === this.asegurados[i].fechadeNacimiento ) {
-                                        if (!this.aseguradosCum.includes(this.asegurados[i].nombre) ) {
-                                        // alert(this.asegurados[i].nombre +" cumple anos hoy")
-                                        this.aseguradosCum.push(this.asegurados[i].nombre)
-                                        }
-
-
-                                    }
-                            }
-
-                }else {
-                const fecha = `${year}-${month}-${day}`;
-
-                        for (let i = 0; i < this.asegurados.length; i++) {
-                                    if (fecha === this.asegurados[i].fechadeNacimiento ) {
-                                        if (!this.aseguradosCum.includes(this.asegurados[i].nombre) ) {
-                                        // alert(this.asegurados[i].nombre +" cumple anos hoy")
-                                        this.aseguradosCum.push(this.asegurados[i].nombre)
-                                        }
-
-                                    }
-                            }
-                }
-        }
+        //                 for (let i = 0; i < this.asegurados.length; i++) {
+        //                             if (fecha === this.asegurados[i].fechadeNacimiento ) {
+        //                                 if (!this.aseguradosCum.includes(this.asegurados[i].nombre) ) {
+        //                                 // alert(this.asegurados[i].nombre +" cumple anos hoy")
+        //                                 this.aseguradosCum.push(this.asegurados[i].nombre)
+        //                                 }
 
 
-    
-             
-            
-            
-        //     const currentDateWithFormat = currentDate.toJSON().slice(0,10);
-        //     // const datee = this.convertTZ(currentDateWithFormat ,"America/El_Salvador");
-        //    const usaTime = currentDateWithFormat.toLocaleString("en-US", {timeZone: "America/El_Salvador"});
+        //                             }
+        //                     }
+
+        //         }else {
+        //         const fecha = `${year}-${month}-${day}`;
+
+        //                 for (let i = 0; i < this.asegurados.length; i++) {
+        //                             if (fecha === this.asegurados[i].fechadeNacimiento ) {
+        //                                 if (!this.aseguradosCum.includes(this.asegurados[i].nombre) ) {
+        //                                 // alert(this.asegurados[i].nombre +" cumple anos hoy")
+        //                                 this.aseguradosCum.push(this.asegurados[i].nombre)
+        //                                 }
+
+        //                             }
+        //                     }
+        //         }
+        // }
 
 
 
         
-        },
-        Eliminar(id){
-                    fetch('/delete/' + id, {
+        // },
+        Eliminar(persona){
+            let confirmacao = confirm("Estas segura de eliminar a: " +persona.nombre+"?")
+            if(confirmacao)
+            {            
+                    fetch('/delete/' + persona._id, {
                      method: 'DELETE',
                      headers:{
                          'Accept': 'application/json',
@@ -201,6 +198,8 @@ export default {
                      this.getAsegurados();
                      location.reload();
                  })
+            }
+
             },
 
 

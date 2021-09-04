@@ -5,6 +5,7 @@ const Asegurado = new Schema({
         nombre: String,
         apellidos: String,
         aseguradora: String,
+        email:String,
         numeroTele: String,
         numeroPoliza: String,
         fechadeNacimiento: String
